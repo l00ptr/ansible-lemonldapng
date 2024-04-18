@@ -10,21 +10,22 @@
       ansible.builtin.uri:
         url: http://{{ ansible_default_ipv4.address }}/
         headers:
-            Host: "auth.{{ lemonldap_domain }}"
-        return_content: yes
+          Host: auth.{{ lemonldap_domain }}
+        return_content: true
       register: loginform
     - name: Login to create cookie
       ansible.builtin.uri:
         url: http://{{ ansible_default_ipv4.address }}/
         method: POST
         headers:
-            Host: "auth.{{ lemonldap_domain }}"
+          Host: auth.{{ lemonldap_domain }}
         body_format: form-urlencoded
         status_code: 302
         body:
-            user: dwho
-            password: dwho
-            token: "{{ loginform.content | regex_search('name=\"token\" value=\"([^\"]*)\"', '\\1') }}"
+          user: dwho
+          password: dwho
+          token: "{{★loginform.content★|★regex_search('name=\"token\"★value=\"([^\"\
+            ]*)\"',★'\\1')★}}"
       register: login_post
 
     - name: Assert login cookie
