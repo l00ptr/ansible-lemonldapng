@@ -1,4 +1,15 @@
 ---
+# tasks file for vhost
+- name: Configure vhost on LemonLDAP::NG side
+  worteks.lemonldap.vhost:
+    vhostname: '{{ item.vhostname }}'
+    access_rules: '{{ item.access_rules }}'
+    exported_headers: '{{ item.exported_headers }}'
+    force: '{{ item.force | default(false) }}'
+    https: '{{ item.https | default(true) }}'
+    maintenance: '{{ item.maintenance | default(false) }}'
+  loop: '{{ vhost_vhosts }}'
+
 - name: Configure vhost on nginx
   ansible.builtin.template:
     src: nginx_vhost.j2
