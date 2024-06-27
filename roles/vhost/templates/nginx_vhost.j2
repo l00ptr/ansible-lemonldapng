@@ -1,7 +1,14 @@
 {% if item.https and (item.redirect_http_to_https | default(false)) %}
 server {
-  listen 80;
+  listen {{ __nginx_default_http_port }};
   server_name {{ item.vhostname }};
+  {% if item.acme_http_challenge | default(__nginx_acme_http_challenge) %}
+  location ^~ /.well-known/acme-challenge/ {
+    default_type "text/plain";
+    root {{ item.acme_http_challenge | default(__nginx_acme_http_challenge_root) }};
+    break;
+  }
+  {% endif %}
 
   # Redirect all traffic to SSL
   rewrite ^ https://$host:{{ item.port }}$request_uri? permanent;
