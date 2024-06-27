@@ -11,7 +11,7 @@ server {
   {% endif %}
 
   # Redirect all traffic to SSL
-  rewrite ^ https://$host:{{ item.port }}$request_uri? permanent;
+  rewrite ^ https://$host:{{ item.port | default(__nginx_default_https_port) }}$request_uri? permanent;
 }
 {% endif %}
 server {
