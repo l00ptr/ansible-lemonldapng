@@ -13,6 +13,7 @@ class ExportedHeader:
 class locationRule:
     location: str
     rule: str
+    comment: Optional[str]
 
 
 @dataclass
@@ -45,7 +46,11 @@ class VirtualHost:
             )
         for r in access_rules:
             self.access_rules.append(
-                locationRule(location=r["location"], rule=r["rule"])
+                locationRule(
+                    location=r["location"],
+                    rule=r["rule"],
+                    comment=r["comment"] if "comment" in r else None,
+                )
             )
 
     def generate_exported_headers_cmd_part(self) -> list[str]:
@@ -61,9 +66,10 @@ class VirtualHost:
     def generate_access_rules_cmd_part(self) -> list[str]:
         cmd = []
         for r in self.access_rules:
+            location = f"(?#{r.comment}){r.location}" if r.comment else r.location
             cmd += [
                 f"locationRules/{self.name}",
-                f"{r.location}",
+                f"{location}",
                 f"{r.rule}",
             ]
         return cmd
