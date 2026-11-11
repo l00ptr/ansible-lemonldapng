@@ -6,6 +6,7 @@
       - vhostname: demo.example.com
         port: 443
         backend: http://127.0.0.1:8888
+        use_websocket: true
         exported_headers:
           - {header: x-wing, value: machin}
         access_rules:
