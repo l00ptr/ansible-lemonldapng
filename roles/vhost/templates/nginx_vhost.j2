@@ -13,10 +13,10 @@ server {
 
 server {
 
-  {% if ansible_facts['distribution_major_version'] | int >= 13 %}
+  {% if ansible_facts['distribution_major_version'] | int >= 13 -%}
   listen {{ item.port | default(__nginx_default_https_port) }} ssl;
   http2 on;
-  {% else %}
+  {% else -%}
   listen {{ item.port | default(__nginx_default_https_port) }} ssl http2;
   {% endif %}
 
