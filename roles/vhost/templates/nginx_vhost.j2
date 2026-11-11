@@ -54,7 +54,12 @@ server {
     set $original_uri $uri$is_args$args;
     auth_request_set $lmremote_user $upstream_http_lm_remote_user;
     auth_request_set $lmlocation $upstream_http_location;
+
+    {%  if "protection_type" not in item or item.protection_type != "authbasic" -%}
+    # more info: https://lemonldap-ng.org/documentation/latest/handlerauthbasic
     error_page 401 $lmlocation;
+    {% endif %}
+
     {% if item.backend is defined -%}
     proxy_pass {{ item.backend }};
     include /etc/nginx/proxy_params;
