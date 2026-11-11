@@ -28,6 +28,11 @@ server {
 
   server_name {{ item.vhostname }};
   root /var/www/html;
+
+{% if item.client_max_body_size | default(false) %}
+  client_max_body_size {{ item.client_max_body_size }};
+{% endif %}
+
   # Internal authentication request
   location = /lmauth {
     internal;
