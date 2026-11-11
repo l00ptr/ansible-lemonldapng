@@ -7,6 +7,14 @@ and LemonLDAP manager (that part is not yet implemented).
 
 ## Role Variables
 
+### \`vhost_snippets
+
+- **Type:** `list` of `dict`
+- **Required:** `no`
+- **Default:** `[]`
+
+List of name and content for snippets we can re-use on vhost definition.
+
 ### `vhost_vhosts` item attributes
 
 #### `vhostname`

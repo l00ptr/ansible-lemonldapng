@@ -20,8 +20,11 @@ server {
   listen {{ item.port | default(__nginx_default_https_port) }} ssl http2;
   {% endif %}
 
-  include snippets/ssl.conf;
+{% for snip in item.snippets | default([]) %}
+  include snippets/{{ snip }};
+{% endfor %}
 
+  include snippets/ssl.conf;
   ssl_certificate {{ item.certificate_location | default(vhost_global_certificate_location) }};
   ssl_certificate_key {{ item.certificate_key_location | default(vhost_global_certificate_key_location) }};
 
