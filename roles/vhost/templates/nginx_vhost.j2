@@ -50,8 +50,8 @@ server {
     auth_request_set $lmremote_user $upstream_http_lm_remote_user;
     auth_request_set $lmlocation $upstream_http_location;
     error_page 401 $lmlocation;
-{% if item.http_proxy_backend is defined %}
-    proxy_pass {{ item.http_proxy_backend }};
+    {% if item.backend is defined -%}
+    proxy_pass {{ item.backend }};
     include /etc/nginx/proxy_params;
 {% endif %}
 {% if item.use_websocket | default(false) %}
