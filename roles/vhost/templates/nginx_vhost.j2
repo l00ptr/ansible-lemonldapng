@@ -3,17 +3,16 @@ map $http_upgrade $connection_upgrade {
     ''      close;
 }
 
-{% if item.https and (item.redirect_http_to_https | default(false)) %}
 server {
   listen 80;
   server_name {{ item.vhostname }};
 
   # Redirect all traffic to SSL
-  rewrite ^ https://$host:{{ item.port }}$request_uri? permanent;
+  rewrite ^ https://$host:{{ item.port | default(443) }}$request_uri? permanent;
 }
-{% endif %}
+
 server {
-{% if item.https %}
+
   {% if ansible_facts['distribution_major_version'] | int >= 13 %}
   listen {{ item.port | default(__nginx_default_https_port) }} ssl;
   http2 on;
@@ -26,9 +25,6 @@ server {
   ssl_certificate {{ item.certificate_location | default(vhost_global_certificate_location) }};
   ssl_certificate_key {{ item.certificate_key_location | default(vhost_global_certificate_key_location) }};
 
-{% else %}
-  listen {{ item.port | default(__nginx_default_http_port) }};
-{% endif %}
 
   server_name {{ item.vhostname }};
   root /var/www/html;
