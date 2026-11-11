@@ -5,7 +5,17 @@
     dest: /etc/nginx/snippets/ssl.conf
     owner: root
     group: root
-    mode: "0644"
+    mode: '0644'
+  notify: Reload webserver
+
+- name: Create custom snippets
+  ansible.builtin.template:
+    src: snippets.conf.j2
+    dest: /etc/nginx/snippets/{{ item.name }}.conf
+    owner: '{{ __nginx_webserver_owner }}'
+    group: '{{ __nginx_webserver_group }}'
+    mode: '0640'
+  loop: '{{ vhost_snippets }}'
   notify: Reload webserver
 
 - name: Configure vhost on nginx
