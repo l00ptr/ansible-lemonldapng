@@ -1,4 +1,13 @@
 ---
+- name: Copy ssl snippets
+  ansible.builtin.copy:
+    src: etc/nginx/snippets/ssl.conf
+    dest: /etc/nginx/snippets/ssl.conf
+    owner: root
+    group: root
+    mode: "0644"
+  notify: Reload webserver
+
 - name: Configure vhost on nginx
   ansible.builtin.template:
     src: nginx_vhost.j2
