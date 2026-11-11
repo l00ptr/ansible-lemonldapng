@@ -79,4 +79,28 @@ server {
     include /etc/lemonldap-ng/nginx-lua-headers.conf;
   }
 {% endif %}
+
+{% for location in item.custom_locations | default([]) %}
+
+  location {{ location.path }} {
+    auth_request /lmauth;
+    set $original_uri $uri$is_args$args;
+    auth_request_set $lmremote_user $upstream_http_lm_remote_user;
+    auth_request_set $lmlocation $upstream_http_location;
+    auth_request_set $cookie_value $upstream_http_set_cookie;
+    add_header Set-Cookie $cookie_value;
+
+{% if "vhost_protection_type" not in item or item.vhost_protection_type != "authbasic" %}
+    error_page 401 $lmlocation;
+{% endif %}
+
+    proxy_pass {{location.server_proto }}://{{ location.backend }};
+    include /etc/nginx/proxy_params;
+
+    ##################################
+    # PASSING HEADERS TO APPLICATION #
+    ##################################
+    include /etc/lemonldap-ng/nginx-lua-headers.conf;
+  }
+{% endfor %}
 }
